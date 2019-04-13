@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Product = require('./api/models/product');
 const bodyParser = require('body-parser');
+const Product = require('./api/models/product');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -82,8 +82,6 @@ app.delete('/products/:productId', (req, res, next) => {
 
 // Test route for development
 app.get('/test', (req, res, next) => {
-  if (process.env.NODE_ENV === 'production') return next();
-
   res.send("Test GET request on server");
 });
 
