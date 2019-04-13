@@ -84,8 +84,7 @@ app.delete('/products/:productId', (req, res, next) => {
 app.get('/test', (req, res, next) => {
   if (process.env.NODE_ENV === 'production') return next();
 
-  next(new Error('Hmmm error'));
-  // res.send("Test GET request on server");
+  res.send("Test GET request on server");
 });
 
 // All undefined routes
