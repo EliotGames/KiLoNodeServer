@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 
 // Test route for development
 app.get('/test', (req, res, next) => {
-  res.send("Test GET request on server");
+  res.send("Tesing...");
 });
 
 // All undefined routes
