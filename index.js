@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const products = require('./routes/products');
+const users = require('./routes/users');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -11,6 +12,8 @@ mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 
 // Main Routes
 app.use('/products', products);
+app.use('/users', users);
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/pages/index.html');

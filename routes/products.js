@@ -16,7 +16,7 @@ router.post('/', (req, res, next) => {
   let validationResult = Joi.validate(req.body, PRODUCT_SCHEMA);
 
   if (validationResult.error) {
-    return res.status(HttpStatus.BAD_REQUEST).json(validationResult.error.details);
+    return res.status(HttpStatus.BAD_REQUEST).json(validationResult.error.details[0]);
   }
 
   const resProduct = validationResult.value;
