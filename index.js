@@ -1,13 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const app = express();
 
 const products = require('./routes/products');
 const users = require('./routes/users');
-const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
+app.use(bodyParser.text());
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 
 // Main Routes
@@ -18,7 +19,6 @@ app.use('/users', users);
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/pages/index.html');
 });
-
 
 // Test route for development
 app.get('/test', (req, res, next) => {
@@ -35,7 +35,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 
   if (process.env.NODE_ENV !== 'production') {
-    res.json({ message: err.message });
+    res.json({ message: err.toString() });
   } else {
     res.send('500 Internal Server Error');
   }

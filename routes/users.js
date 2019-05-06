@@ -31,7 +31,8 @@ router.post('/', (req, res, next) => {
       message: 'POST request to users',
       createdUser: result
     });
-  });
+  })
+  .catch(err => next(err));
 });
 
 router.get('/', (req, res, next) => {

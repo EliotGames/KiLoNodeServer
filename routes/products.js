@@ -14,7 +14,6 @@ const PRODUCT_SCHEMA = Joi.object().keys({
 // Routes
 router.post('/', (req, res, next) => {
   let validationResult = Joi.validate(req.body, PRODUCT_SCHEMA);
-
   if (validationResult.error) {
     return res.status(HttpStatus.BAD_REQUEST).json(validationResult.error.details[0]);
   }
@@ -33,7 +32,7 @@ router.post('/', (req, res, next) => {
       message: 'POST request to products',
       createdProduct: result
     });
-  });
+  }).catch(err => next(err));
 });
 
 router.get('/', (req, res, next) => {
@@ -59,9 +58,7 @@ router.get("/:productId", (req, res, next) => {
         })
       }
     })
-    .catch(err => {
-      next(err);
-    })
+    .catch(err => next(err));
 });
 
 router.patch('/:productId', (req, res, next) => {
