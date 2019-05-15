@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
 
-const products = require('./routes/products');
-const users = require('./routes/users');
+const productsRoute = require('./routes/products');
+const usersRoute = require('./routes/users');
+const devicesRoute = require('./routes/devices');
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
@@ -12,8 +13,9 @@ app.use(bodyParser.text());
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 
 // Main Routes
-app.use('/products', products);
-app.use('/users', users);
+app.use('/products', productsRoute);
+app.use('/users', usersRoute);
+app.use('/devices', devicesRoute);
 
 
 app.get('/', (req, res) => {
