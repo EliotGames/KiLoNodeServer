@@ -98,6 +98,8 @@ router.patch("/:deviceId", (req, res, next) => {
   const newDevice = req.body;
   const oldDevice = { _id: req.params.deviceId };
 
+  newDevice.currentWeight = newDevice.currentWeight* 282;
+
   Device.findById(req.params.deviceId)
     .exec()
     .then(doc => {
