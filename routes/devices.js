@@ -98,19 +98,31 @@ router.patch("/:deviceId", (req, res, next) => {
   const newDevice = req.body;
   const oldDevice = { _id: req.params.deviceId };
 
-  Device.findOneAndUpdate(
-    oldDevice,
-    newDevice,
-    { upsert: false },
-    (err, doc) => {
-      if (err) return next(err);
+  Device.findById(req.params.deviceId)
+    .exec()
+    .then(doc => {
+      if (doc) {
+        Device.findOneAndUpdate(
+          oldDevice,
+          newDevice,
+          { upsert: false },
+          (err, doc) => {
+            if (err) return next(err);
 
-      return res.status(HttpStatus.OK).json({
-        message: "Succesfully saved",
-        updatedDevice: doc
-      });
-    }
-  );
+            return res.status(HttpStatus.OK).json({
+              message: "Succesfully saved",
+              updatedDevice: doc
+            });
+          }
+        );
+      } else {
+        next({
+          status: HttpStatus.NOT_FOUND,
+          message: "Product is not found"
+        });
+      }
+    })
+    .catch(err => next(err));
 });
 
 router.delete("/:deviceId", (req, res, next) => {
