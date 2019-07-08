@@ -5,6 +5,7 @@ const Joi = require('joi');
 const HttpStatus = require('http-status-codes');
 const Product = require('../db/models/product');
 
+// Validation shema
 const PRODUCT_SCHEMA = Joi.object().keys({
   name: Joi.string().min(3).max(25).trim().required(),
   price: Joi.number().positive().required(),

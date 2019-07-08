@@ -5,6 +5,7 @@ const Joi = require("joi");
 const HttpStatus = require("http-status-codes");
 const Device = require("../db/models/device");
 
+// Validation shema
 const DEVICE_SCHEMA = Joi.object().keys({
   _id: Joi.string()
     .length(20)
@@ -69,12 +70,25 @@ router.post("/", (req, res, next) => {
 });
 
 router.get("/", (req, res, next) => {
-  Device.find()
-    .exec()
-    .then(docs => {
-      res.status(HttpStatus.OK).json(docs);
+  // if ?telegramId was specified
+  if (req.query.telegramId) {
+    Device.find({
+      userIds: { $elemMatch: { telegramId: req.query.telegramId } }
     })
-    .catch(err => next(err));
+      .exec()
+      .then(docs => {
+        res.status(HttpStatus.OK).json(docs);
+      })
+      .catch(err => next(err));
+  } else {
+    // returns all documents
+    Device.find()
+      .exec()
+      .then(docs => {
+        res.status(HttpStatus.OK).json(docs);
+      })
+      .catch(err => next(err));
+  }
 });
 
 router.get("/:productId", (req, res, next) => {
@@ -99,9 +113,9 @@ router.patch("/:deviceId", (req, res, next) => {
   const oldDevice = { _id: req.params.deviceId };
 
   if (newDevice.currentWeight) {
-    newDevice.currentWeight = newDevice.currentWeight* 282;
+    newDevice.currentWeight = newDevice.currentWeight * 282;
   }
-  
+
   Device.findById(req.params.deviceId)
     .exec()
     .then(doc => {
