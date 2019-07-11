@@ -93,6 +93,7 @@ router.get("/", (req, res, next) => {
 
 router.get("/:productId", (req, res, next) => {
   const id = req.params.productId;
+
   Device.findById(id)
     .exec()
     .then(doc => {
@@ -111,6 +112,7 @@ router.get("/:productId", (req, res, next) => {
 router.patch("/:deviceId", (req, res, next) => {
   const newDevice = req.body;
   const oldDevice = { _id: req.params.deviceId };
+  const shouldDelete = req.query.deleteUser === "true";
 
   if (newDevice.currentWeight) {
     newDevice.currentWeight = newDevice.currentWeight * 282;
@@ -120,6 +122,20 @@ router.patch("/:deviceId", (req, res, next) => {
     .exec()
     .then(doc => {
       if (doc) {
+        if (newDevice.userIds && newDevice.userIds.length !== 0) {
+          // if ?deleteUser=true, remove userId from device
+          if (shouldDelete) {
+            newDevice.userIds = doc.userIds.filter(oldId => {
+              return !newDevice.userIds.find(
+                deleteId => oldId.telegramId === deleteId.telegramId
+              );
+            });
+          } else {
+            // Otherwise, add userId to device
+            newDevice.userIds = newDevice.userIds.concat(doc.userIds);
+          }
+        }
+
         Device.findOneAndUpdate(
           oldDevice,
           newDevice,
