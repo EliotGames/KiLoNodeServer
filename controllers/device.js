@@ -1,8 +1,8 @@
 const HttpStatus = require("http-status-codes");
 
+const Device = require("../models/device");
 const { getIdValue } = require("../helpers/db");
 const { filterObj } = require("../helpers/utils");
-const Device = require("../models/device");
 
 /* 
   Adds new device
@@ -91,6 +91,7 @@ async function getById(req, res, next) {
   }
 */
 async function updateItem(req, res, next) {
+  let body = req.body;
   const updateValues = [
     "name",
     "currentWeight",
@@ -100,10 +101,14 @@ async function updateItem(req, res, next) {
     "alertOn"
   ];
 
-  const oldDevice = { _id: req.params.id };
-  const updatedDevice = filterObj(req.body, updateValues);
-
   try {
+    if (typeof body === "string") {
+      body = JSON.parse(body);
+    }
+
+    const oldDevice = { _id: req.params.id };
+    const updatedDevice = filterObj(body, updateValues);
+
     const deviceAfterUpdate = await Device.findOneAndUpdate(
       oldDevice,
       updatedDevice
