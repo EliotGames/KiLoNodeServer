@@ -34,7 +34,6 @@ async function createItem(req, res, next) {
       createdDevice: result
     });
   } catch (e) {
-    console.error(e);
     next(e);
   }
 }
