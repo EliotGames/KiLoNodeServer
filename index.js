@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
-const Swagger = require('./swagger');
  
 require('dotenv-safe').config();
 
@@ -14,8 +13,6 @@ app.use(bodyParser.text());
 
 // MongoDB
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
-// Swagger
-Swagger(app);
 
 // Main Routes
 app.use('/api', routes);
