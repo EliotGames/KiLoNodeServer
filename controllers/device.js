@@ -20,7 +20,6 @@ async function createItem(req, res, next) {
 
   try {
     const createdDevice = new Device({
-      _id: getIdValue(),
       mac,
       ownerId,
       name: name || "No name",

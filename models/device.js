@@ -1,10 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const { REGEX_MAC_ADRESS, REGEX_NO_SPECIAL_CHARACTERS } = require('../helpers/consts');
+const {
+  REGEX_MAC_ADRESS,
+  REGEX_NO_SPECIAL_CHARACTERS
+} = require("../helpers/consts");
+const { getIdValue } = require("../helpers/db");
 
 const deviceSchema = mongoose.Schema({
   _id: {
-    type: String
+    type: String,
+    minlength: 5,
+    default: getIdValue
   },
   mac: {
     type: String,
@@ -23,11 +29,11 @@ const deviceSchema = mongoose.Schema({
   ownerId: {
     type: Number,
     required: true,
-    ref: 'User'
+    ref: "User"
   },
   productId: {
     type: Number,
-    ref: 'Product'
+    ref: "Product"
   },
   maxWeight: {
     type: Number,
@@ -47,4 +53,4 @@ const deviceSchema = mongoose.Schema({
   lastCheck: { type: Date, default: Date.now() }
 });
 
-module.exports = mongoose.model('Device', deviceSchema);
+module.exports = mongoose.model("Device", deviceSchema);
