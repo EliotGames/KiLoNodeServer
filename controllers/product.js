@@ -29,7 +29,7 @@ router.post('/', (req, res, next) => {
   });
 
   product.save().then(result => {
-    res.status(HttpStatus.OK).json({
+    res.json({
       message: 'POST request to products',
       createdProduct: result
     });
@@ -40,7 +40,7 @@ router.get('/', (req, res, next) => {
   Product.find()
     .exec()
     .then(docs => {
-      res.status(HttpStatus.OK).json(docs);
+      res.json(docs);
     })
     .catch(err => next(err));
 });
@@ -51,7 +51,7 @@ router.get("/:productId", (req, res, next) => {
     .exec()
     .then(doc => {
       if (doc) {
-        res.status(HttpStatus.OK).json(doc);
+        res.json(doc);
       } else {
         next({
           status: HttpStatus.NOT_FOUND,
@@ -75,7 +75,7 @@ router.patch('/:productId', (req, res, next) => {
   Product.findOneAndUpdate(oldProduct, newProduct, { upsert: false }, (err, doc) => {
     if (err) return next(err);
 
-    return res.status(HttpStatus.OK).json({
+    return res.json({
       message: "Succesfully saved",
       updatedProduct: newProduct
     });
@@ -87,7 +87,7 @@ router.delete('/:productId', (req, res, next) => {
   Product.remove({ _id: id })
     .exec()
     .then(result => {
-      res.status(HttpStatus.OK).json({ itemsDeleted: result.deletedCount });
+      res.json({ itemsDeleted: result.deletedCount });
     })
     .catch(err => next(err));
 });

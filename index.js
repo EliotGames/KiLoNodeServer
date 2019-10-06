@@ -2,29 +2,26 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
+const Swagger = require('./swagger');
+ 
+require('dotenv-safe').config();
 
-const productsRoute = require('./routes/products');
-const usersRoute = require('./routes/users');
-const devicesRoute = require('./routes/devices');
+const routes = require('./routes/index');
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.text());
+
+// MongoDB
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
+// Swagger
+Swagger(app);
 
 // Main Routes
-app.use('/products', productsRoute);
-app.use('/users', usersRoute);
-app.use('/devices', devicesRoute);
-
+app.use('/api', routes);
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/pages/index.html');
-});
-
-// Test route for development
-app.get('/test', (req, res, next) => {
-  res.send("Tesing...");
 });
 
 // All undefined routes
