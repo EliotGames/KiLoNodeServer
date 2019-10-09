@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
   createItem,
+  updateCurrentWeight,
   getAll,
   getById,
   updateItem,
@@ -12,6 +13,7 @@ const {
 const router = express.Router();
 
 router.post("/", createItem);
+router.patch("/:id/weight", updateCurrentWeight);
 router.get("/", getAll);
 router.get("/:id", getById);
 router.patch("/:id", updateItem);

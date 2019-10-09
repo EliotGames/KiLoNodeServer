@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 
 const measureSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    index: true,
+    required: true,
+    auto: true
+  },
   value: {
     type: Number,
     required: true,
