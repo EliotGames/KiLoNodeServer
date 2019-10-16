@@ -1,20 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Joi = require('joi');
 const HttpStatus = require('http-status-codes');
 const Product = require('../db/models/product');
 
-// Validation shema
-const PRODUCT_SCHEMA = Joi.object().keys({
-  name: Joi.string().min(3).max(25).trim().required(),
-  price: Joi.number().positive().required(),
-  isAvaiable: Joi.boolean().required(),
-});
-
 // Routes
 router.post('/', (req, res, next) => {
-  let validationResult = Joi.validate(req.body, PRODUCT_SCHEMA);
   if (validationResult.error) {
     return res.status(HttpStatus.BAD_REQUEST).json(validationResult.error.details[0]);
   }

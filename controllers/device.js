@@ -56,7 +56,7 @@ async function updateCurrentWeight(req, res, next) {
     // Updateing currentWeight column
     const currentWeight = body.currentWeight;
 
-    if (!currentWeight && currentWeight !== 0) {
+    if (currentWeight >= 0) {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: "CurrentWeight should be presented!" });
