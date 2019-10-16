@@ -1,11 +1,13 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 const app = express();
- 
-require('dotenv-safe').config();
 
-const routes = require('./routes/index');
+if (process.env.NODE_ENV === "production") {
+  require("dotenv-safe").config();
+}
+
+const routes = require("./routes/index");
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
@@ -15,10 +17,10 @@ app.use(bodyParser.text());
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 
 // Main Routes
-app.use('/api', routes);
+app.use("/api", routes);
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/pages/index.html');
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/pages/index.html");
 });
 
 // All undefined routes
@@ -30,10 +32,10 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     res.json({ message: err.toString() });
   } else {
-    res.send('500 Internal Server Error');
+    res.send("500 Internal Server Error");
   }
 });
 
