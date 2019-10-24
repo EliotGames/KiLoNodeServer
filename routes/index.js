@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const deviceRoutes = require('./device');
+const measureRoutes = require('./measure');
 // const userRoutes = require('./user');
 // const productRoutes = require('./product');
-// const measureRoutes = require('./measure');
 
 router.use('/device', deviceRoutes);
+router.use('/measure', measureRoutes);
 // router.use('/user', userRoutes);
 // router.use('/product', productRoutes);
-// router.use('/measure', measureRoutes);
 
 module.exports = router;
