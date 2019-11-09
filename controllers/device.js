@@ -5,10 +5,11 @@ const Measure = require("../models/measure");
 const { filterObj } = require("../helpers/utils");
 
 /* 
-  Adds new device
+  Creates new device
   Method: POST
   Url: api/device
-  Body example: {
+  Body example: 
+  {
     "mac": "12-12-00-AA-00-00",
     "ownerId": 1,
     "currentWeight": 122,
@@ -26,11 +27,10 @@ async function createItem(req, res, next) {
       currentWeight
     });
 
-    const result = await createdDevice.save();
+    const createdDevice = await createdDevice.save();
 
     res.json({
-      message: "POST request to devices",
-      createdDevice: result
+      createdDevice
     });
   } catch (e) {
     next(e);
@@ -41,7 +41,8 @@ async function createItem(req, res, next) {
   Updates a device's current weight and makes a record about it
   Method: PATCH
   Url: api/device/:id/weight
-  Body example: {
+  Body example: 
+  {
     "currentWeight": 240.4
   }
 */
@@ -141,7 +142,8 @@ async function getById(req, res, next) {
   Updates a device
   Method: PATCH
   Url: api/device/:id
-  Body example: {
+  Body example: 
+  {
     "name": "Device name",
     "productId": 1,
     "maxWeight": 1000,
@@ -209,7 +211,8 @@ async function getConnectionStatus(req, res, next) {
   Updates a device lastCheck property
   Method: PATCH
   Url: api/device/:id/lastCheck
-  Body example: {
+  Body example: 
+  {
     "name": "Device name",
     "currentWeight": 240.4,
     "productId": 1,

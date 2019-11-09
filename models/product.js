@@ -16,6 +16,10 @@ const productSchema = mongoose.Schema({
     type: Number,
     min: 0
   },
+  type: {
+    type: String,
+    enum: ['solid', 'fluid'],
+  },
   isAvaiable: {
     type: Boolean,
     default: true

@@ -1,59 +1,83 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
-const HttpStatus = require('http-status-codes');
-const Product = require('../db/models/product');
+const mongoose = require("mongoose");
+const HttpStatus = require("http-status-codes");
+const Product = require("../db/models/product");
 
-// Routes
-router.post('/', (req, res, next) => {
-  if (validationResult.error) {
-    return res.status(HttpStatus.BAD_REQUEST).json(validationResult.error.details[0]);
+/*
+  Creates new product
+  Method: POST
+  Url: api/product
+  Body example: 
+  {
+    "name": "Apple",
+    "price": 23,
+    "type": "solid",
+    "isAvaiable": true,
   }
+*/
+async function createItem(req, res, next) {
+  const { name, price, type, isAvaiable } = req.body;
 
-  const resProduct = validationResult.value;
-
-  const product = new Product({
-    _id: new mongoose.Types.ObjectId(),
-    name: resProduct.name,
-    price: resProduct.price,
-    isAvaiable: resProduct.isAvaiable,
+  const newProduct = new Product({
+    name,
+    price,
+    type,
+    isAvaiable
   });
 
-  product.save().then(result => {
-    res.json({
-      message: 'POST request to products',
-      createdProduct: result
+  try {
+    const createdProduct = await newProduct.save();
+
+    return res.json({
+      createdProduct
     });
-  }).catch(err => next(err));
-});
+  } catch (e) {
+    next(e);
+  }
+}
 
-router.get('/', (req, res, next) => {
-  Product.find()
-    .exec()
-    .then(docs => {
-      res.json(docs);
-    })
-    .catch(err => next(err));
-});
+/*
+  Gets all products
+  Method: GET
+  Url: api/product
+*/
+async function getAll(req, res, next) {
+  try {
+    const products = await Product.find().exec();
 
-router.get("/:productId", (req, res, next) => {
-  const id = req.params.productId;
-  Product.findById(id)
-    .exec()
-    .then(doc => {
-      if (doc) {
-        res.json(doc);
-      } else {
-        next({
-          status: HttpStatus.NOT_FOUND,
-          message: "Product is not found"
-        })
-      }
-    })
-    .catch(err => next(err));
-});
+    return res.json(products);
+  } catch (e) {
+    next(e);
+  }
+}
 
-router.patch('/:productId', (req, res, next) => {
+/*
+  Gets product by id
+  Method: GET
+  Url: api/product
+*/
+async function getById(req, res, next) {
+  const id = req.params.id;
+
+  try {
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return next({
+        status: HttpStatus.NOT_FOUND,
+        message: "Product is not found"
+      });
+    }
+
+    return res.json(doc);
+  } catch (e) {
+    next(e);
+  }
+}
+
+// TODO: rewrite
+async function updateProduct(req, res, next) {
   let validationResult = Joi.validate(req.body, PRODUCT_SCHEMA);
 
   if (validationResult.error) {
@@ -61,7 +85,7 @@ router.patch('/:productId', (req, res, next) => {
   }
 
   const newProduct = validationResult.value;
-  const oldProduct = { '_id': req.params.productId };
+  const oldProduct = { _id: req.params.productId };
 
   Product.findOneAndUpdate(oldProduct, newProduct, { upsert: false }, (err, doc) => {
     if (err) return next(err);
@@ -71,16 +95,11 @@ router.patch('/:productId', (req, res, next) => {
       updatedProduct: newProduct
     });
   });
-});
+}
 
-router.delete('/:productId', (req, res, next) => {
-  const id = req.params.productId;
-  Product.remove({ _id: id })
-    .exec()
-    .then(result => {
-      res.json({ itemsDeleted: result.deletedCount });
-    })
-    .catch(err => next(err));
-});
-
-module.exports = router;
+module.exports = {
+  createItem,
+  getAll,
+  getById,
+  updateProduct
+};
