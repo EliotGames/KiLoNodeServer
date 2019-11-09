@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
+const cors = require("cors");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv-safe").config();
@@ -10,18 +11,17 @@ if (process.env.NODE_ENV !== "production") {
 const routes = require("./routes/index");
 const PORT = process.env.PORT || 5000;
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.header(
-    "Access-Control-Allow-Methods",
-    "PATCH"
-  );
-  next();
-});
+const allowedUrls = ["https://kilo-admin-panel.herokuapp.com", "http://localhost:3000"];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedUrls.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 
