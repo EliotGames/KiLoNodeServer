@@ -1,10 +1,10 @@
 const express = require("express");
 
-const { getAll, getLastMeasureOfDevice } = require("../controllers/measure");
+const { getAllMeasures, getLastMeasureOfDevice } = require("../controllers/measure.controller");
 
 const router = express.Router();
 
-router.get("/", getAll);
+router.get("/", getAllMeasures);
 router.get("/:deviceId", getLastMeasureOfDevice);
 
 module.exports = router;

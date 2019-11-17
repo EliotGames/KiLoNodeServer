@@ -5,7 +5,7 @@ const Measure = require("../models/measure");
   Method: GET
   Url: api/measure
 */
-const getAll = async (req, res, next) => {
+const getAllMeasures = async (req, res, next) => {
   try {
     const measures = await Measure.find().exec();
 
@@ -33,6 +33,6 @@ const getLastMeasureOfDevice = async (req, res, next) => {
 };
 
 module.exports = {
-  getAll,
+  getAllMeasures,
   getLastMeasureOfDevice
 };

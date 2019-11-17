@@ -17,7 +17,7 @@ const { filterObj } = require("../helpers/utils");
     "lastName": "User"
   } 
 */
-async function createItem(req, res, next) {
+async function registerUser(req, res, next) {
   const userData = filterObj(req.body, ["email", "phone", "firstName", "lastName", "password"]);
 
   const newUser = new User(userData);
@@ -103,7 +103,7 @@ async function loginUser(req, res, next) {
   }
 }
 
-async function getAll(req, res, next) {
+async function getAllUsers(req, res, next) {
   try {
     const docs = await User.find().exec();
 
@@ -113,7 +113,7 @@ async function getAll(req, res, next) {
   }
 }
 
-async function getById(req, res, next) {
+async function getUserById(req, res, next) {
   try {
     const userId = req.params.id;
 
@@ -133,8 +133,8 @@ async function getById(req, res, next) {
 }
 
 module.exports = {
-  createItem,
+  registerUser,
   loginUser,
-  getAll,
-  getById
+  getAllUsers,
+  getUserById
 };

@@ -16,7 +16,7 @@ const { filterObj } = require("../helpers/utils");
     "name": "My device"
   } 
 */
-async function createItem(req, res, next) {
+async function createDevice(req, res, next) {
   const { mac, name, ownerId, currentWeight } = req.body;
 
   try {
@@ -46,7 +46,7 @@ async function createItem(req, res, next) {
     "currentWeight": 240.4
   }
 */
-async function updateCurrentWeight(req, res, next) {
+async function updateCurrentDeviceWeight(req, res, next) {
   let body = req.body;
 
   try {
@@ -100,7 +100,7 @@ async function updateCurrentWeight(req, res, next) {
   Method: GET
   Url: api/device
 */
-async function getAll(req, res, next) {
+async function getAllDevices(req, res, next) {
   try {
     const docs = await Device.find().exec();
 
@@ -115,7 +115,7 @@ async function getAll(req, res, next) {
   Method: GET
   Url: api/device/:id
 */
-async function getById(req, res, next) {
+async function getDeviceById(req, res, next) {
   const id = req.params.id;
 
   try {
@@ -146,7 +146,7 @@ async function getById(req, res, next) {
     "alertOn": 10
   }
 */
-async function updateItem(req, res, next) {
+async function updateDevice(req, res, next) {
   try {
     const oldDevice = { _id: req.params.id };
     const updatedDevice = filterObj(req.body, [
@@ -177,7 +177,7 @@ async function updateItem(req, res, next) {
   Method: GET
   Url: api/device/:id/lastCheck
 */
-async function getConnectionStatus(req, res, next) {
+async function getDeviceConnectionStatus(req, res, next) {
   try {
     const device = await Device.findOne({ _id: req.params.id }).exec();
 
@@ -207,7 +207,7 @@ async function getConnectionStatus(req, res, next) {
     "alertOn": 10
   }
 */
-async function updateConnectionStatus(req, res, next) {
+async function updateDeviceConnectionStatus(req, res, next) {
   try {
     const deviceAfterUpdate = await Device.findOneAndUpdate(
       { _id: req.params.id },
@@ -229,11 +229,11 @@ async function updateConnectionStatus(req, res, next) {
 }
 
 module.exports = {
-  createItem,
-  updateCurrentWeight,
-  getAll,
-  getById,
-  updateItem,
-  getConnectionStatus,
-  updateConnectionStatus
+  createDevice,
+  updateCurrentDeviceWeight,
+  getAllDevices,
+  getDeviceById,
+  updateDevice,
+  getDeviceConnectionStatus,
+  updateDeviceConnectionStatus
 };
