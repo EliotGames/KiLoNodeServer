@@ -11,29 +11,18 @@ if (process.env.NODE_ENV !== "production") {
 const routes = require("./routes/index");
 const PORT = process.env.PORT || 5000;
 
-const allowedUrls = ["https://kilo-admin-panel.herokuapp.com", "http://localhost:3000"];
-const corsOptions = {
-  origin: (origin, callback) => {
-    console.log("ORIGIN: ", origin);
-    if (allowedUrls.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  }
-};
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 
-// MongoDB
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 
 // Main Routes
 app.use("/api", routes);
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/pages/index.html");
+
+  res.send("HELLO, EVERYTHIN IS OK");
 });
 
 // All undefined routes

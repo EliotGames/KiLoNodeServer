@@ -1,9 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const HttpStatus = require("http-status-codes");
 const Measure = require("../models/measure");
 
-// Get all measures
+/*
+  Gets all measures
+  Method: GET
+  Url: api/measure
+*/
 const getAll = async (req, res, next) => {
   try {
     const measures = await Measure.find().exec();
@@ -14,6 +15,11 @@ const getAll = async (req, res, next) => {
   }
 };
 
+/*
+  Gets a last measure for device
+  Method: GET
+  Url: api/measure/:deviceId
+*/
 const getLastMeasureOfDevice = async (req, res, next) => {
   const { deviceId } = req.params;
 

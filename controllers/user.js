@@ -1,46 +1,103 @@
-const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');
-const Joi = require('joi');
-const HttpStatus = require('http-status-codes');
-const User = require('../models/user');
+const HttpStatus = require("http-status-codes");
 
-// Validation shema
-const USER_SCHEMA = Joi.object().keys({
-  firstName: Joi.string()
-    .trim()
-    .max(30)
-    .required(),
-  telegramId: Joi.string()
-    .regex(/^[0-9]+$/, 'numbers')
-    .min(3)
-    .max(15)
-    .trim()
-});
+const User = require("../models/user");
+const Device = require("../models/device");
+const { filterObj } = require("../helpers/utils");
 
+/* 
+  Creates new user
+  Method: POST
+  Url: api/user/register
+  Body example: 
+  {
+    "email": "example@gmail.com",
+    "password": "123456",
+    "phone": "+380987654321",
+    "firstName": "Test",
+    "lastName": "User"
+  } 
+*/
 async function createItem(req, res, next) {
-  const validationResult = Joi.validate(req.body, USER_SCHEMA);
+  const userData = filterObj(req.body, ["email", "phone", "firstName", "lastName", "password"]);
 
-  if (validationResult.error) {
-    return res.status(HttpStatus.BAD_REQUEST).json(validationResult.error.details[0]);
-  }
-
-  const resUser = validationResult.value;
-
-  const newUser = new User({
-    _id: new mongoose.Types.ObjectId(),
-    firstName: resUser.firstName,
-    telegramId: resUser.telegramId || null
-  });
+  const newUser = new User(userData);
 
   try {
+    const user = await User.findOne({ email: userData.email });
+
+    if (user) {
+      return res.status(400).json({
+        meassage: "User with that email already exists"
+      });
+    }
+
     const result = await newUser.save();
 
     return res.json({
-      message: 'POST request to users',
       createdUser: result
     });
   } catch (e) {
+    next(e);
+  }
+}
+
+/* 
+  Logs in user
+  Method: POST
+  Url: api/user/login
+  Body example: 
+  {
+    "email": "example@gmail.com",
+    "password": "123456",
+    "deviceId": "uf200"
+  } 
+*/
+async function loginUser(req, res, next) {
+  try {
+    let body = req.body;
+
+    if (typeof body === "string") {
+      body = JSON.parse(body);
+    }
+
+    const { email, password, deviceId } = body;
+
+    const foundUser = await User.findOne({ email });
+
+    if (!foundUser) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ message: "User with that email not found" });
+    }
+
+    foundUser.comparePassword(password, async (err, isMatch) => {
+      if (err) {
+        throw err;
+      }
+
+      if (!isMatch) {
+        return res.status(400).json({ message: "Wrong password!" });
+      }
+
+      if (deviceId) {
+        const device = await Device.findById(deviceId);
+
+        if (!device) {
+          return res.status(HttpStatus.BAD_REQUEST).json({ message: "Device not found" });
+        }
+
+        if (device.ownerIds.indexOf(foundUser.id) !== -1) {
+          return res.status(HttpStatus.BAD_REQUEST).json({ message: "Device is already linked" });
+        }
+
+        await Device.findByIdAndUpdate(deviceId, {
+          ownerIds: [foundUser.id, ...device.ownerIds]
+        });
+
+        return res.json({ message: "Device was linked to user" });
+      }
+
+      return res.json(foundUser);
+    });
+  } catch (error) {
     next(e);
   }
 }
@@ -57,15 +114,18 @@ async function getAll(req, res, next) {
 
 async function getById(req, res, next) {
   try {
-    const doc = await User.findOne({ telegramId: telegramId });
-    if (!doc) {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
       return next({
         status: HttpStatus.NOT_FOUND,
-        message: 'User is not found'
+        message: "User is not found"
       });
     }
 
-    return res.json(doc);
+    return res.json(user);
   } catch (e) {
     next(e);
   }
@@ -73,6 +133,7 @@ async function getById(req, res, next) {
 
 module.exports = {
   createItem,
+  loginUser,
   getAll,
   getById
 };

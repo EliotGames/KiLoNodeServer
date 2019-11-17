@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 
-const {
-  REGEX_MAC_ADRESS,
-  REGEX_NO_SPECIAL_CHARACTERS
-} = require("../helpers/consts");
+const { REGEX_MAC_ADRESS, REGEX_NO_SPECIAL_CHARACTERS } = require("../helpers/consts");
 const { getIdValue } = require("../helpers/db");
 
 const deviceSchema = mongoose.Schema({
@@ -26,11 +23,12 @@ const deviceSchema = mongoose.Schema({
     type: Number,
     min: 0
   },
-  ownerId: {
-    type: Number,
-    required: true,
-    ref: "User"
-  },
+  ownerIds: [
+    {
+      type: String,
+      ref: "User"
+    }
+  ],
   productId: {
     type: Number,
     ref: "Product"

@@ -1,6 +1,3 @@
-const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
 const HttpStatus = require("http-status-codes");
 const Product = require("../db/models/product");
 

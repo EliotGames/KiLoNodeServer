@@ -13,7 +13,7 @@ const { filterObj } = require("../helpers/utils");
     "mac": "12-12-00-AA-00-00",
     "ownerId": 1,
     "currentWeight": 122,
-    "name": 
+    "name": "My device"
   } 
 */
 async function createItem(req, res, next) {
@@ -66,15 +66,10 @@ async function updateCurrentWeight(req, res, next) {
     const oldDevice = { _id: req.params.id };
     const updatedDevice = { currentWeight };
 
-    const deviceAfterUpdate = await Device.findOneAndUpdate(
-      oldDevice,
-      updatedDevice
-    ).exec();
+    const deviceAfterUpdate = await Device.findOneAndUpdate(oldDevice, updatedDevice).exec();
 
     if (!deviceAfterUpdate) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .json({ message: "KiLo with that id is not found" });
+      return res.status(HttpStatus.NOT_FOUND).json({ message: "KiLo with that id is not found" });
     }
 
     // Making a record in Measures collection
@@ -152,27 +147,20 @@ async function getById(req, res, next) {
   }
 */
 async function updateItem(req, res, next) {
-  const updateValues = [
-    "name",
-    "productId",
-    "maxWeight",
-    "zeroWeight",
-    "alertOn"
-  ];
-
   try {
     const oldDevice = { _id: req.params.id };
-    const updatedDevice = filterObj(req.body, updateValues);
+    const updatedDevice = filterObj(req.body, [
+      "name",
+      "productId",
+      "maxWeight",
+      "zeroWeight",
+      "alertOn"
+    ]);
 
-    const deviceAfterUpdate = await Device.findOneAndUpdate(
-      oldDevice,
-      updatedDevice
-    ).exec();
+    const deviceAfterUpdate = await Device.findOneAndUpdate(oldDevice, updatedDevice).exec();
 
     if (!deviceAfterUpdate) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .json({ message: "KiLo with that id is not found" });
+      return res.status(HttpStatus.NOT_FOUND).json({ message: "KiLo with that id is not found" });
     }
 
     return res.json({
@@ -194,9 +182,7 @@ async function getConnectionStatus(req, res, next) {
     const device = await Device.findOne({ _id: req.params.id }).exec();
 
     if (!device) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .json({ message: "KiLo with that id is not found" });
+      return res.status(HttpStatus.NOT_FOUND).json({ message: "KiLo with that id is not found" });
     }
 
     return res.json({
@@ -231,9 +217,7 @@ async function updateConnectionStatus(req, res, next) {
     ).exec();
 
     if (!deviceAfterUpdate) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .json({ message: "KiLo with that id is not found" });
+      return res.status(HttpStatus.NOT_FOUND).json({ message: "KiLo with that id is not found" });
     }
 
     return res.json({
