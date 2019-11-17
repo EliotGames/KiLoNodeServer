@@ -103,6 +103,11 @@ async function loginUser(req, res, next) {
   }
 }
 
+/*
+  Gets all users
+  Method: GET
+  Url: api/user
+*/
 async function getAllUsers(req, res, next) {
   try {
     const docs = await User.find().exec();
@@ -113,6 +118,12 @@ async function getAllUsers(req, res, next) {
   }
 }
 
+
+/*
+  Gets user by its id
+  Method: GET
+  Url: api/user/:id
+*/
 async function getUserById(req, res, next) {
   try {
     const userId = req.params.id;

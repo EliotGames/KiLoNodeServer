@@ -102,9 +102,17 @@ async function updateCurrentDeviceWeight(req, res, next) {
 */
 async function getAllDevices(req, res, next) {
   try {
-    const docs = await Device.find().exec();
+    const devices = await Device.find().exec();
 
-    res.json(docs);
+    const resultDevices = devices.map(device => {
+      if (device.zeroWeight) {
+        device.currentWeight -= device.zeroWeight;
+      }
+
+      return device;
+    });
+
+    res.json(resultDevices);
   } catch (e) {
     next(e);
   }
@@ -119,15 +127,15 @@ async function getDeviceById(req, res, next) {
   const id = req.params.id;
 
   try {
-    const doc = await Device.findOne({ _id: id }).exec();
+    const foundDevice = await Device.findOne({ _id: id }).exec();
 
-    if (doc) {
-      res.json(doc);
-    } else {
+    if (!foundDevice) {
       res.status(HttpStatus.NOT_FOUND).json({
         message: "Product is not found"
       });
     }
+
+    return res.json(foundDevice);
   } catch (e) {
     next(e);
   }
@@ -140,6 +148,7 @@ async function getDeviceById(req, res, next) {
   Body example: 
   {
     "name": "Device name",
+    "product": "Coca-cola"
     "productId": 1,
     "maxWeight": 1000,
     "zeroWeight": 150,
@@ -151,6 +160,7 @@ async function updateDevice(req, res, next) {
     const oldDevice = { _id: req.params.id };
     const updatedDevice = filterObj(req.body, [
       "name",
+      "product",
       "productId",
       "maxWeight",
       "zeroWeight",
