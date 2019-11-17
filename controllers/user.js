@@ -50,7 +50,7 @@ async function createItem(req, res, next) {
     "email": "example@gmail.com",
     "password": "123456",
     "deviceId": "uf200"
-  } 
+  }
 */
 async function loginUser(req, res, next) {
   try {
@@ -77,6 +77,7 @@ async function loginUser(req, res, next) {
         return res.status(400).json({ message: "Wrong password!" });
       }
 
+      // If body has deviceId, we link device to logged user
       if (deviceId) {
         const device = await Device.findById(deviceId);
 
@@ -85,7 +86,7 @@ async function loginUser(req, res, next) {
         }
 
         if (device.ownerIds.indexOf(foundUser.id) !== -1) {
-          return res.status(HttpStatus.BAD_REQUEST).json({ message: "Device is already linked" });
+          return res.json({ message: "Device is already linked" });
         }
 
         await Device.findByIdAndUpdate(deviceId, {
