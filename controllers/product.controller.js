@@ -1,5 +1,5 @@
 const HttpStatus = require("http-status-codes");
-const Product = require("../db/models/product");
+const Product = require("../models/product");
 
 /*
   Creates new product
@@ -13,7 +13,7 @@ const Product = require("../db/models/product");
     "isAvaiable": true,
   }
 */
-async function createItem(req, res, next) {
+async function createProduct(req, res, next) {
   const { name, price, type, isAvaiable } = req.body;
 
   const newProduct = new Product({
@@ -39,7 +39,7 @@ async function createItem(req, res, next) {
   Method: GET
   Url: api/product
 */
-async function getAll(req, res, next) {
+async function getAllProducts(req, res, next) {
   try {
     const products = await Product.find().exec();
 
@@ -54,7 +54,7 @@ async function getAll(req, res, next) {
   Method: GET
   Url: api/product
 */
-async function getById(req, res, next) {
+async function getProductById(req, res, next) {
   const id = req.params.id;
 
   try {
@@ -95,8 +95,8 @@ async function updateProduct(req, res, next) {
 }
 
 module.exports = {
-  createItem,
-  getAll,
-  getById,
+  createProduct,
+  getAllProducts,
+  getProductById,
   updateProduct
 };
