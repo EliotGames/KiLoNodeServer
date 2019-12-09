@@ -1,3 +1,5 @@
+const Product = require("../models/product");
+
 const filterObj = (object, values) => {
   const result = {};
 
@@ -10,4 +12,15 @@ const filterObj = (object, values) => {
   return result;
 };
 
-module.exports = { filterObj };
+const formatDevice = async device => {
+  if (device.zeroWeight) {
+    device.currentWeight -= device.zeroWeight;
+  }
+
+  const formattedDevice = device.toObject();
+  formattedDevice.product = await Product.findById(device.productId).exec();
+
+  return formattedDevice;
+};
+
+module.exports = { filterObj, formatDevice };

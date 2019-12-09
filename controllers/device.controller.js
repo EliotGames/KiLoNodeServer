@@ -1,8 +1,9 @@
 const HttpStatus = require("http-status-codes");
 
 const Device = require("../models/device");
+const Product = require("../models/product");
 const Measure = require("../models/measure");
-const { filterObj } = require("../helpers/utils");
+const { filterObj, formatDevice } = require("../helpers/utils");
 
 /* 
   Creates new device
@@ -104,13 +105,7 @@ async function getAllDevices(req, res, next) {
   try {
     const devices = await Device.find().exec();
 
-    const resultDevices = devices.map(device => {
-      if (device.zeroWeight) {
-        device.currentWeight -= device.zeroWeight;
-      }
-
-      return device;
-    });
+    const resultDevices = await Promise.all(devices.map(formatDevice));
 
     res.json(resultDevices);
   } catch (e) {
@@ -135,7 +130,7 @@ async function getDeviceById(req, res, next) {
       });
     }
 
-    return res.json(foundDevice);
+    return res.json(await formatDevice(foundDevice));
   } catch (e) {
     next(e);
   }
