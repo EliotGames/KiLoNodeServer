@@ -30,7 +30,7 @@ const deviceSchema = mongoose.Schema({
     }
   ],
   productId: {
-    type: Number,
+    type: String,
     ref: "Product"
   },
   maxWeight: {

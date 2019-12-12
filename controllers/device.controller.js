@@ -143,7 +143,10 @@ async function getDeviceById(req, res, next) {
   Body example: 
   {
     "name": "Device name",
-    "product": "Coca-cola"
+    "product": {
+      "name": "Coca-cola",
+      "type": solid
+    },
     "productId": 1,
     "maxWeight": 1000,
     "zeroWeight": 150,
@@ -161,6 +164,16 @@ async function updateDevice(req, res, next) {
       "zeroWeight",
       "alertOn"
     ]);
+
+    if (updatedDevice.product) {
+      const product = await Product.findOne({ where: { name: updatedDevice.product.name } });
+
+      // if the product does not exist, we create the new one
+      if (!product) {
+        const createdProduct = await Product.create({ name: updatedDevice.product.name });
+        updatedDevice.productId = createdProduct._id;
+      }
+    }
 
     const deviceAfterUpdate = await Device.findOneAndUpdate(oldDevice, updatedDevice).exec();
 
